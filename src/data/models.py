@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from typing import Dict, Optional
 
 
@@ -9,8 +9,20 @@ class NotificationPreferences(BaseModel):
 
 class UserPreference(BaseModel):
     userId: int
-    email: str
+    email: EmailStr
     telephone: str
+    preferences: NotificationPreferences
+
+
+class CreateUserRequest(BaseModel):
+    email: EmailStr
+    telephone: str
+    preferences: NotificationPreferences
+
+
+class UpdateUserRequest(BaseModel):
+    email: EmailStr
+    telephone: Optional[str] = None
     preferences: NotificationPreferences
 
 
