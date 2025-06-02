@@ -1,4 +1,3 @@
-import asyncio
 import httpx
 from typing import Dict, Any, Optional
 from fastapi import HTTPException, status
@@ -69,46 +68,16 @@ class NotificationService:
         return await self._make_api_request("send-sms", payload)
     
     async def _send_user_notification(self, user: UserPreference, message: str) -> Dict[str, Any]:
-        """Send notification to a user based on their preferences concurrently."""
+        """Send notification to a user based on their preferences."""
         results = {"email": None, "sms": None}
         
-        # Prepare tasks for concurrent execution
-        tasks = []
+        # Send email if enabled
         if user.preferences.email:
-            tasks.append(("email", self._send_email(user.email, message)))
+            results["email"] = await self._send_email(user.email, message)
         
+        # Send SMS if enabled
         if user.preferences.sms:
-            tasks.append(("sms", self._send_sms(user.telephone, message)))
-        
-        # Execute all tasks concurrently if any exist
-        if not tasks:
-            return results
-        
-        try:
-            # Use asyncio.gather for concurrent execution
-            task_results = await asyncio.gather(
-                *[task[1] for task in tasks], 
-                return_exceptions=True
-            )
-            
-            # Map results back to their channels
-            for i, (channel, _) in enumerate(tasks):
-                result = task_results[i]
-                if isinstance(result, Exception):
-                    results[channel] = {
-                        "success": False, 
-                        "error": f"Task failed: {str(result)}"
-                    }
-                else:
-                    results[channel] = result
-                    
-        except Exception as e:
-            # Handle unexpected errors in concurrent execution
-            for channel, _ in tasks:
-                results[channel] = {
-                    "success": False, 
-                    "error": f"Concurrent execution failed: {str(e)}"
-                }
+            results["sms"] = await self._send_sms(user.telephone, message)
         
         return results
     
@@ -130,7 +99,7 @@ class NotificationService:
                 userId=request.userId
             )
         
-        # Send notification via external service (async and concurrent)
+        # Send notification via external service
         results = await self._send_user_notification(user, request.message)
         
         # Process results and create response
@@ -138,36 +107,22 @@ class NotificationService:
     
     def _create_response(self, results: Dict[str, Any], user_id: int) -> NotificationResponse:
         """Create notification response based on results."""
-        success = False
-        success_messages = []
-        error_messages = []
+        # Check if any notification was successful
+        success = any(
+            result.get("success", False) 
+            for result in results.values() 
+            if result is not None
+        )
         
-        # Process email results
-        email_result = results.get("email")
-        if email_result:
-            if email_result.get("success"):
-                success = True
-                success_messages.append("Email sent successfully")
-            else:
-                error_messages.append(f"Email failed: {email_result.get('error', 'Unknown error')}")
+        # Build status message
+        statuses = []
+        for channel, result in results.items():
+            if result is None:
+                continue
+            status = "succeeded" if result.get("success", False) else "failed"
+            statuses.append(f"{channel.upper()} {status}")
         
-        # Process SMS results
-        sms_result = results.get("sms")
-        if sms_result:
-            if sms_result.get("success"):
-                success = True
-                success_messages.append("SMS sent successfully")
-            else:
-                error_messages.append(f"SMS failed: {sms_result.get('error', 'Unknown error')}")
-        
-        # Create response message
-        if success:
-            if error_messages:
-                message = f"{'; '.join(success_messages)}. {'; '.join(error_messages)}"
-            else:
-                message = "; ".join(success_messages)
-        else:
-            message = f"Failed to send notification: {'; '.join(error_messages)}"
+        message = " and ".join(statuses) if statuses else "No notifications sent"
         
         return NotificationResponse(
             success=success,
