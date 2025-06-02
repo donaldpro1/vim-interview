@@ -238,13 +238,18 @@ curl -X GET http://localhost:8080/users \
 /project-root
 ├── docker-compose.yml              # Docker Compose configuration
 ├── Dockerfile                      # User Notifications Manager container
-├── requirements.txt                # Python dependencies (includes httpx for async)
+├── requirements.txt                # Python dependencies
 ├── README.md                       # This file
 ├── src/
 │   ├── __init__.py
-│   ├── main.py                     # Async FastAPI application
-│   ├── models.py                   # Pydantic models
-│   └── notification_service.py     # Async external service integration
+│   ├── main.py                     # FastAPI application entry point
+│   ├── config.py                   # Configuration settings
+│   ├── data/                       # Data models and storage
+│   ├── routers/                    # API route handlers
+│   └── services/                   # Business logic and external service integration
+├── .dockerignore                   # Docker build exclusions
+├── .gitignore                      # Git exclusions
+└── .vscode/                        # VS Code settings
 ```
 
 ## Error Handling
