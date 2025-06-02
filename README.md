@@ -168,14 +168,7 @@ curl -X POST -H "Authorization: Bearer onlyvim2024" -H "Content-Type: applicatio
 
 ### Create New User
 ```bash
-curl -X POST http://localhost:8080/users \
--H "Authorization: Bearer onlyvim2024" \
--H "Content-Type: application/json" \
--d '{
-  "email": "newuser@example.com",
-  "telephone": "+123456789",
-  "preferences": { "email": true, "sms": true }
-}'
+curl -X POST http://localhost:8080/users -H "Authorization: Bearer onlyvim2024" -H "Content-Type: application/json" -d '{"email": "donald@example.com", "telephone": "+123456789", "preferences": { "email": true, "sms": true }}'
 ```
 
 ### Update User Preferences

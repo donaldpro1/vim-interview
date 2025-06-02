@@ -7,6 +7,7 @@ from .models import (
     NotificationRequest, 
     NotificationResponse
 )
+from .database import user_db
 
 __all__ = [
     "get_initial_users", 
@@ -17,5 +18,6 @@ __all__ = [
     "CreateUserRequest", 
     "UpdateUserRequest", 
     "NotificationRequest", 
-    "NotificationResponse"
+    "NotificationResponse",
+    "user_db"
 ] 

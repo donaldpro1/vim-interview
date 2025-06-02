@@ -3,7 +3,7 @@ import httpx
 from typing import Dict, Any, Optional
 from fastapi import HTTPException, status
 from ..data.models import UserPreference, NotificationRequest, NotificationResponse
-from ..database import user_db
+from ..data.database import user_db
 from ..config import settings
 
 

@@ -1,6 +1,6 @@
 from typing import Dict, Optional
-from .data.models import UserPreference
-from .data import get_initial_user_dict, get_initial_email_mapping
+from .models import UserPreference
+from . import get_initial_user_dict, get_initial_email_mapping
 
 
 class UserDatabase:

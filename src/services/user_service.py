@@ -1,7 +1,7 @@
 from fastapi import HTTPException, status
 from typing import List
 from ..data.models import UserPreference, CreateUserRequest, UpdateUserRequest
-from ..database import user_db
+from ..data.database import user_db
 
 
 class UserService:
