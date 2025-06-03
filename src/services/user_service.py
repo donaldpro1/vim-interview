@@ -26,7 +26,7 @@ class UserService:
         # Check if user with this email already exists
         if user_db.user_exists_by_email(user_request.email):
             raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
+                status_code=status.HTTP_409_CONFLICT,
                 detail=f"User with email {user_request.email} already exists"
             )
         
