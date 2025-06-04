@@ -273,18 +273,12 @@ The service includes comprehensive error handling:
 ## Scalability Considerations
 
 - **Async Architecture**: Non-blocking I/O operations for better concurrency
-- **Concurrent Processing**: Parallel notification sending reduces latency
 - **In-Memory Storage**: Optimized for hundreds of thousands of users
 - **Email Indexing**: O(1) lookup time for users by email
 - **Connection Pooling**: Efficient HTTP connection management
 - **Docker Ready**: Horizontal scaling with container orchestration
 
 ## Performance Benchmarks
-
-### Notification Sending Performance
-- **Sequential (old)**: Email + SMS = ~2-3 seconds total
-- **Concurrent (new)**: Email || SMS = ~1-1.5 seconds total
-- **Improvement**: ~50% faster notification delivery
 
 ### Concurrent Request Handling
 - Async endpoints can handle multiple requests simultaneously
